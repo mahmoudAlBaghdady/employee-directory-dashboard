@@ -45,6 +45,10 @@ const EditProfile = () => {
                       <input type="text" className="form-control" />
                     </div>
                     <div className="col-sm-6 m-b30">
+                      <label className="form-label">Image URL</label>
+                      <input type="text" className="form-control" />
+                    </div>
+                    <div className="col-sm-6 m-b30">
                       <label className="form-label">Department</label>
                       <Select options={options2} className="custom-react-select" defaultValue="Select Department" isSearchable={false} />
                     </div>
