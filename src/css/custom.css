@@ -1,0 +1,32 @@
+
+.logo-image {
+  display: block;
+  margin-left: 5px;
+  margin-top: 5px;
+  border-radius: 5px;
+  height: 60px;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media screen and (max-width: 600px) {
+  .logo-image {
+    width: auto;
+    height: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-image {
+    height: 30px;
+  }
+}
+
+@media (max-width: 992px) {
+  .logo-image {
+    margin-top: 5px;
+    margin-bottom: 2px;
+    height: 60px;
+    max-width: 70px;
+  }
+}
