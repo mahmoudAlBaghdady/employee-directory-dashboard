@@ -1,43 +1,40 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { IMAGES, SVGICON } from "../constant/theme";
+import { SVGICON } from "../../constant/theme";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchAsyncEmployees, searchEmployeesAsync, selectAllEmployees, selectSearchResults } from "../../store/employee/EmployeeSlice";
+import { fetchAsyncEmployees, selectAllEmployees} from "../../../store/employee/EmployeeSlice";
 
-// tableData
 const Customers = () => {
 
   const dispatch = useDispatch();
   const employeesObject = useSelector(selectAllEmployees);
-  const searchResults = useSelector(selectSearchResults);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(0);
+  const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const { employees, totalPage } = employeesObject || { employees: [], totalPage: 0 }; 
 
+  useEffect(() => {
+    dispatch(fetchAsyncEmployees({ search: search.trim(), page: currentPage, limit: itemsPerPage }));
+  }, [dispatch, currentPage, itemsPerPage]);
+
   const handleSearch = (e) => {
     e.preventDefault(); 
-    setCurrentPage(1); 
-    if (searchQuery.trim()) {
-      dispatch(searchEmployeesAsync({ query: searchQuery.trim(), page: currentPage, limit: itemsPerPage }));
-    } else {
-      dispatch(fetchAsyncEmployees({ page: currentPage, limit: itemsPerPage }));
-    }
+    dispatch(fetchAsyncEmployees({ search: search.trim(), page: 0, limit: itemsPerPage }));
   };
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      dispatch(searchEmployeesAsync({ query: searchQuery.trim(), page: currentPage, limit: itemsPerPage }));
-    } else {
-      dispatch(fetchAsyncEmployees({ page: currentPage, limit: itemsPerPage }));
-    }
-  }, [dispatch, currentPage, itemsPerPage, searchQuery]);
-
 
   const handleChangePage = (newPage) => {
     setCurrentPage(newPage);
   };
-  const employeesToDisplay = searchQuery.trim() ? searchResults : employees;
+  const handleSearchChange=(e)=>{
+    e.preventDefault();
+    if(e.target.value === ''){
+      setCurrentPage(1)
+      setSearch('');
+    }else{
+      setSearch(e.target.value);
+    }
+  }
   return (
     <div className="container">
       <div className="row justify-content-between mb-3">
@@ -48,14 +45,14 @@ const Customers = () => {
               type="search"
               placeholder="Search"
               aria-label="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={search}
+              onChange={handleSearchChange}
             />
             <button className="btn btn-outline-success" type="submit">Search</button>
           </form>
         </div>
         <div className="col-4  my-auto">
-          <Link to={"/add-employee"} className="btn btn-lg btn-success float-end">Add New Employee</Link>
+          <Link to={"/add-edit-employee"} className="btn btn-lg btn-success float-end">Add New Employee</Link>
         </div>
       </div> 
       <div className="row">
@@ -76,7 +73,7 @@ const Customers = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {employeesToDisplay?.map((item, index) => (
+                      {employees?.map((item, index) => (
                         <tr key={item.id}>
                           <td>
                             <div className="d-flex align-items-center">
@@ -89,23 +86,23 @@ const Customers = () => {
                           <td>{item.department.name}</td>
                           <td>{item.jobTitle}</td>
                           <td>
-                            <Link className="btn btn-outline-success p-2 me-1" to={"/edit-employee/"+item.id}>{SVGICON.Edit}</Link>
-                            {item.isFavorite?<button className="btn btn-warning py-2 px-3">{SVGICON.StarWhite}</button>:<button className="btn btn-outline-warning py-2 px-3">{SVGICON.StarYellow}</button>}
+                            <Link className="btn btn-outline-success p-2 me-1" to={"/add-edit-employee/"+item.id}>{SVGICON.Edit}</Link>
+                            {item.isFavorite?<i className="btn btn-warning py-2 px-3">{SVGICON.StarWhite}</i>:<i className="btn btn-outline-warning py-2 px-3">{SVGICON.StarYellow}</i>}
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                   <div className="dataTables_paginate paging_simple_numbers justify-content-center" id="example_paginate">
-                    <button className="paginate_button previous" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 0}>Prev</button>
+                    <button className="paginate_button previous" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Prev</button>
                     <span>
                       {[...Array(totalPage).keys()].map((number) => {
                         return (
-                          <button key={number} className={`paginate_button ${currentPage === number ? "current" : ""}`} onClick={() => handleChangePage(number)}>{number + 1}</button>
+                          <button key={number} className={`paginate_button ${currentPage === number+1 ? "current" : ""}`} onClick={() => handleChangePage(number+1)}>{number + 1}</button>
                         );
                       })}
                     </span>
-                    <button className="paginate_button next" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage + 1 >= totalPage}>Next</button>
+                    <button className="paginate_button next" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage >= totalPage}>Next</button>
                   </div>
                 </div>
               </div>

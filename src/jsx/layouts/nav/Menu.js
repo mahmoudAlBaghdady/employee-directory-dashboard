@@ -4,26 +4,16 @@ export const MenuList = [
   {
     title: "Employees",
     to: "/",
-    iconStyle: SVGICON.Table,
+    iconStyle: SVGICON.Profile,
   },
   {
-    title: "Edit Profile",
-    to: "edit-profile",
-    iconStyle: SVGICON.Forms,
-  },
-  {
-    title: "Add a New Department",
-    to: "new-department",
-    iconStyle: SVGICON.Forms,
-  },
-  {
-    title: "Add a New Job Title",
-    to: "new-job-title",
-    iconStyle: SVGICON.Forms,
-  },
-  {
-    title: "Add a New Location",
-    to: "new-location",
+    title: "Departments",
+    to: "departments",
     iconStyle: SVGICON.Home,
+  },
+  {
+    title: "Locations",
+    to: "locations",
+    iconStyle: SVGICON.Location,
   },
 ];
